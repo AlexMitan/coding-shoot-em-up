@@ -1,19 +1,29 @@
+var id = 0;
 class GameObject {
-    constructor(world, parent) {
+    constructor(world, parent, addToParent=true) {
         this.world = world;
         this.children = [];
         this.parent = parent || null;
-        if (parent)
-        this.name = name;
+        if (parent && addToParent) {
+            parent.addChild(this);
+        }
+        this.id = id;
+        id += 1;
     }
     addChild(gameObj) {
-        this.children.push(gameObj);
+        let childIdx = this.children.indexOf(gameObj);
+        if (childIdx == -1){
+            this.children.push(gameObj);
+        }
     }
     removeChild(gameObj){
         let childIdx = this.children.indexOf(gameObj);
         if (childIdx > -1){
             this.children.splice(childIdx, 1);
         }
+    }
+    getID() {
+        console.log(this.id);
     }
     recurse(fnName) {
         this[fnName]();
@@ -23,21 +33,16 @@ class GameObject {
     }
 }
 
-// var world = {};
-// var mothership = new GameObject(world, 'mothership');
+var world = {};
+var mothership = new GameObject(world);
 
-// var fighter = new GameObject(world, 'fighter', mothership);
-// mothership.addChild(fighter);
-// var interceptor = new GameObject(world, 'interceptor', mothership);
-// mothership.addChild(interceptor);
+var fighter = new GameObject(world, mothership);
+var fighterCannon1 = new GameObject(world, fighter);
+var fighterCannon2 = new GameObject(world, fighter);
 
-// var interceptorCannon1 = new GameObject(world, 'interceptorCannon1', interceptor);
-// interceptor.addChild(interceptorCannon1);
-// var interceptorCannon2 = new GameObject(world, 'interceptorCannon2', interceptor);
-// interceptor.addChild(interceptorCannon2);
-// var fighterCannon1 = new GameObject(world, 'fighterCannon1', fighter);
-// fighter.addChild(fighterCannon1);
-// var fighterCannon2 = new GameObject(world, 'fighterCannon2', fighter);
-// fighter.addChild(fighterCannon2);
+var interceptor = new GameObject(world, mothership);
+var interceptorCannon1 = new GameObject(world, interceptor);
+var interceptorCannon2 = new GameObject(world, interceptor);
 
-// mothership.recurse('generic');
+
+mothership.recurse('getID');
