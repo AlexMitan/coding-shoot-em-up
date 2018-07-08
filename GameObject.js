@@ -1,14 +1,13 @@
-var id = 0;
 class GameObject {
-    constructor(world, parent, addToParent=true) {
+    constructor(world, prnt, addToprnt=true) {
         this.world = world;
         this.children = [];
-        this.parent = parent || null;
-        if (parent && addToParent) {
-            parent.addChild(this);
+        this.prnt = prnt || null;
+        if (prnt && addToprnt) {
+            prnt.addChild(this);
         }
-        this.id = id;
-        id += 1;
+        this.id = GameObject.id;
+        GameObject.id += 1;
     }
     addChild(gameObj) {
         let childIdx = this.children.indexOf(gameObj);
@@ -22,27 +21,41 @@ class GameObject {
             this.children.splice(childIdx, 1);
         }
     }
+    getRoot() {
+        let obj = this;
+        while (obj.prnt != null) {
+            obj = obj.prnt;
+        }
+        return obj;
+    }
     getID() {
         console.log(this.id);
     }
-    recurse(fnName) {
-        this[fnName]();
+    recurse(fnName, applyToSelf=true) {
+        if (applyToSelf) {
+            this[fnName]();
+        }
         for (let child of this.children) {
             child.recurse(fnName);
         }
     }
 }
+GameObject.id = 0;
 
-var world = {};
-var mothership = new GameObject(world);
-
-var fighter = new GameObject(world, mothership);
-var fighterCannon1 = new GameObject(world, fighter);
-var fighterCannon2 = new GameObject(world, fighter);
-
-var interceptor = new GameObject(world, mothership);
-var interceptorCannon1 = new GameObject(world, interceptor);
-var interceptorCannon2 = new GameObject(world, interceptor);
-
-
-mothership.recurse('getID');
+if (true) {
+    var world = {};
+    var mothership = new GameObject(world);
+    
+    var fighter = new GameObject(world, mothership);
+    var interceptor = new GameObject(world, mothership);
+    
+    var fighterCannon1 = new GameObject(world, fighter);
+    var fighterCannon2 = new GameObject(world, fighter);
+    var interceptorCannon1 = new GameObject(world, interceptor);
+    var interceptorCannon2 = new GameObject(world, interceptor);
+    
+    mothership.recurse('getID');
+    for (let obj of [fighter, interceptorCannon1, mothership]) {
+        console.log(obj.getRoot().id);
+    }
+}
