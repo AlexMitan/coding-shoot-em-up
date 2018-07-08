@@ -1,5 +1,5 @@
 class GameObject {
-    constructor(world, prnt, addToprnt=true) {
+    constructor(world, prnt, addToprnt=false) {
         this.world = world;
         this.children = [];
         this.prnt = prnt || null;
@@ -16,10 +16,7 @@ class GameObject {
         }
     }
     removeChild(gameObj){
-        let childIdx = this.children.indexOf(gameObj);
-        if (childIdx > -1){
-            this.children.splice(childIdx, 1);
-        }
+        removeFromArr(this.children, gameObj);
     }
     getRoot() {
         let obj = this;
@@ -32,17 +29,22 @@ class GameObject {
         console.log(this.id);
     }
     recurse(fnName, applyToSelf=true) {
-        if (applyToSelf) {
+        if (applyToSelf && this[fnName]) {
             this[fnName]();
         }
         for (let child of this.children) {
             child.recurse(fnName);
         }
     }
+    remove() {
+        if (this.prnt) {
+            this.prnt.removeChild(this);
+        }
+    }
 }
 GameObject.id = 0;
 
-if (true) {
+if (false) {
     var world = {};
     var mothership = new GameObject(world);
     

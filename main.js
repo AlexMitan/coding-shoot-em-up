@@ -1,24 +1,10 @@
-// module aliases
-var Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    // Composites = Matter.Composites,
-    // MouseConstraint = Matter.MouseConstraint,
-    // Mouse = Matter.Mouse,
-    Bodies = Matter.Bodies,
-    Events = Matter.Events,
-    Body = Matter.Body;
 
-var KEY_W = 87,
-    KEY_S = 83,
-    KEY_A = 65,
-    KEY_D = 68;
-var fps = 60,
-    keysDown = {};
 
 window.onload = () => {
+    // keysDown setup
     document.body.addEventListener('keydown', function(e) {
         keysDown[e.which] = true;
+        // console.log(e.which);
     });
     document.body.addEventListener('keyup', function(e) {
         keysDown[e.which] = false;
@@ -27,7 +13,7 @@ window.onload = () => {
     // create an engine
     var engine = Engine.create();
     // disable gravity
-    // engine.world.gravity.y = 0;
+    engine.world.gravity.y = 0;
     // create a renderer
     var render = Render.create({
         element: document.body,
@@ -36,8 +22,11 @@ window.onload = () => {
     
     var player = new Player(engine.world, 400, 200, 15, 40, 100);
     player.setKeysDown(keysDown);
-    player.body.friction = 0.95;
-    player.body.frictionStatic = 0.95;
+    for (let i=0; i<6; i++) {
+        let drone = new Drone(engine.world, player, 0, 0, 10, 10)
+        drone.angleCtr = i * 60;
+        player.addChild(drone);
+    }
     var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
     // add all of the bodies to the world
     World.add(engine.world, [ground]);
@@ -66,29 +55,34 @@ window.onload = () => {
     Events.on(engine, "beforeTick", function(event) {
         player.beforeTick();        
 
-        // add obstacle
-        game.obstacleCounter -= 1;
+        // // add obstacle
+        // game.obstacleCounter -= 1;
         
-        if (game.obstacleCounter === 0) {
-            game.obstacleCounter = randomInt(0, fps);
-            var obstacle = Bodies.rectangle(randomInt(0, 600), 0, randomInt(10, 70), randomInt(10, 70));
-            // var obstacle = Bodies.rectangle(600, 550, 80, 30);
-            obstacle.friction = 0.95;
-            obstacle.frictionStatic = 0.95;
-            World.add(engine.world, obstacle);
-            game.obstacles.push(obstacle);
-        }
-        for (let obs of game.obstacles) {
-            var gravity = engine.world.gravity;
-            if (true) {
-                // Body.applyForce(obs, obs.position, {
-                //     x: -gravity.x * gravity.scale * obs.mass,
-                //     y: -gravity.y * gravity.scale * obs.mass
-                // });
-                // Body.setAngle(obs, 0);
-            }
-            // Body.setVelocity(obs, {x:-3, y:0});
-        }
+        // if (game.obstacleCounter === 0) {
+        //     game.obstacleCounter = randomInt(0, fps);
+        //     var obstacle = Bodies.rectangle(randomInt(0, 600), 0, randomInt(10, 70), randomInt(10, 70), {
+        //         frictionAir: 0
+        //     });
+        //     // var obstacle = Bodies.rectangle(600, 550, 80, 30);
+        //     obstacle.force = {
+        //         x: randomFloat(-0.002, 0.002),
+        //         y: 0.01
+        //     }
+        //     // Body.setForce(obstacle, );
+        //     World.add(engine.world, obstacle);
+        //     game.obstacles.push(obstacle);
+        // }
+        // for (let obs of game.obstacles) {
+        //     var gravity = engine.world.gravity;
+        //     if (true) {
+        //         // Body.applyForce(obs, obs.position, {
+        //         //     x: -gravity.x * gravity.scale * obs.mass,
+        //         //     y: -gravity.y * gravity.scale * obs.mass
+        //         // });
+        //         // Body.setAngle(obs, 0);
+        //     }
+        //     // Body.setVelocity(obs, {x:-3, y:0});
+        // }
     });
     // run the renderer
     Render.run(render);

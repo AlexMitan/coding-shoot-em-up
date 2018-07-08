@@ -12,6 +12,13 @@ function makeFromArr(arr, len) {
     return elem;
 }
 
+function removeFromArr(arr, elem) {
+    let idx = arr.indexOf(elem);
+    if (idx > -1){
+        arr.splice(idx, 1);
+    }
+}
+
 function degToRad(deg) {
     return deg / 180 * Math.PI;
 }

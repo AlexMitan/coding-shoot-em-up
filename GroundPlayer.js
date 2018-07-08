@@ -1,4 +1,4 @@
-class Player extends GameObject{
+class GroundPlayer extends GameObject{
     constructor(world, x, y, w, h, hp) {
         super(world);
         this.hp = hp;
