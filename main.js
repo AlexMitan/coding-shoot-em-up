@@ -26,7 +26,8 @@ window.onload = () => {
 
     // create an engine
     var engine = Engine.create();
-    
+    // disable gravity
+    // engine.world.gravity.y = 0;
     // create a renderer
     var render = Render.create({
         element: document.body,
